@@ -85,9 +85,22 @@ model =0
 with open('trainedModel.nn','rb') as file:
     model = pickle.load(file)
 
-
+print(model.summary())
 
 loss, accuracy = model.evaluate(X_train, y_train, verbose=False)
 print("Training Accuracy: {:.4f}".format(accuracy))
 loss, accuracy = model.evaluate(X_test, y_test, verbose=False)
 print("Testing Accuracy:  {:.4f}".format(accuracy))
+
+
+def embed_tweet(tweet):
+    #clean tweet
+    cleaned = []
+    cleaned.append(tweet_cleaner(tweet))
+    tokened = tokenizer.texts_to_sequences(cleaned)
+    tokened = pad_sequences(tokened, padding='post', maxlen=100)
+
+    guess = model.predict(tokened)
+    return guess
+
+print(embed_tweet("I am very happy"))
