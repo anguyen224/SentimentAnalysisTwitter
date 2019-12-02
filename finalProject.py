@@ -12,7 +12,7 @@ import numpy as np
 from bs4 import BeautifulSoup
 from nltk.tokenize import WordPunctTokenizer
 import re
-
+import pickle
 
 
 df = pd.read_csv('./datasets/newData3.csv', names=['label', 'sentence'], sep='\t', engine='python')
@@ -98,6 +98,11 @@ history = model.fit(X_train, y_train,
                     verbose=False,
                     validation_data=(X_test, y_test),
                     batch_size=10)
+
+
+
+with open('trainedModel.nn', 'wb') as file:
+    pickle.dump(model, file)
 loss, accuracy = model.evaluate(X_train, y_train, verbose=False)
 print("Training Accuracy: {:.4f}".format(accuracy))
 loss, accuracy = model.evaluate(X_test, y_test, verbose=False)
