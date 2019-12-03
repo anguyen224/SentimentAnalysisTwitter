@@ -13,9 +13,10 @@ from bs4 import BeautifulSoup
 from nltk.tokenize import WordPunctTokenizer
 import re
 import pickle
+import spacy
 
 
-df = pd.read_csv('./datasets/newData3.csv', names=['label', 'sentence'], sep='\t', engine='python')
+df = pd.read_csv('./datasets/training80k.csv', names=['label', 'sentence'], sep='\t', engine='python')
 
 
 
@@ -46,7 +47,7 @@ for t in testing:
 #print(test_result)
 
 sentences = test_result
-sentences_train, sentences_test, y_train, y_test = train_test_split(sentences, y, test_size=0.25, random_state=1000)
+sentences_train, sentences_test, y_train, y_test = train_test_split(sentences, y, test_size=0.2, random_state=1000)
 tokenizer = Tokenizer(num_words=5000)
 #creates the vocabulary index based on work frequency
 #every word gets its own unique integer value
@@ -103,4 +104,19 @@ def embed_tweet(tweet):
     guess = model.predict(tokened)
     return guess
 
-print(embed_tweet("I am very happy"))
+def entityExtract(tweet):
+    nlp = spacy.load("en_core_web_sm")
+    s = nlp(tweet)
+
+    for ent in s.ents:
+        print(ent.text, ent.label_)
+
+print ("\nEnter a string for sentiment analysis: ")
+print ("(Enter 'EXIT' to exit the program)")
+while (True):
+    inp = input(">>> ")
+    if inp == "EXIT":
+        break
+    print(embed_tweet(str(inp)))
+    entityExtract(inp)
+    print('\n')
