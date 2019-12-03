@@ -120,3 +120,40 @@ while (True):
     print(embed_tweet(str(inp)))
     entityExtract(inp)
     print('\n')
+
+
+
+def find_sentiment(keyword):
+    df = pd.read_csv('./datasets/training400k.csv', names=['label', 'sentence'], sep='\t', engine='python')
+
+    average = 0
+    keyword_tweet_list = []
+    for sentence in df['sentence']:
+        print(sentence)
+        if keyword in sentence.lower().split():
+            print(sentence.split())
+            keyword_tweet_list.append(sentence)
+    print(keyword_tweet_list)
+    for tweet in keyword_tweet_list:
+        average += predict_tweet(tweet)
+
+    return average/len(keyword_tweet_list)
+
+
+
+def predict_tweet(tweet):
+#clean tweet
+    cleaned = []
+    cleaned.append(tweet_cleaner(tweet))
+    tokened = tokenizer.texts_to_sequences(cleaned)
+    tokened = pad_sequences(tokened, padding='post', maxlen=100)
+
+    guess = model.predict(tokened)
+    return guess
+
+##User enters a keyword "trump"
+##Selects each tweet that contains "trump" and runs it on the model
+##computes the average sentiment and returns it
+
+print(find_sentiment("trump"))
+
