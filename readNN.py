@@ -119,10 +119,6 @@ print("Training Accuracy: {:.4f}".format(accuracy))
 loss, accuracy = model.evaluate(X_test, y_test, verbose=False)
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 
-
-#to remove
-with open('trainedModel.nn','rb') as file:
-    model = pickle.load(file)
 df = pd.read_csv('./datasets/training400.csv', names=['label', 'sentence'], sep='\t', engine='python')
 
 while True:
