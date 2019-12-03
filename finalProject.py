@@ -41,7 +41,7 @@ def tweet_cleaner(text):
     # During the letters_only process two lines above, it has created unnecessay white spaces,
     # Tokenize and join together to remove unneccessary white spaces
     words = tok.tokenize(lower_case)
-    return (" ".join(words)).strip()
+    return (" ".join(words)).lower().strip()
 
 df = pd.read_csv('./datasets/training80k.csv', names=['label', 'sentence'], sep='\t', engine='python')
 sentences = df['sentence'].values
