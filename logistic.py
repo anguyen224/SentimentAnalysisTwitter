@@ -9,6 +9,7 @@ from sklearn import preprocessing
 from sklearn import metrics
 import re
 import pickle
+from sklearn.model_selection import train_test_split
 #from nltk.corpus import stopwords
 
 combined_pat = "(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"
@@ -37,11 +38,8 @@ y_train = df['label'].values
 
 df_test = pd.read_csv('./datasets/test20k.csv', names=['label', 'sentence'], sep='\t', engine='python')
 
-X_test = (df_test['sentence'].values)[:10000]
-y_test = (df_test['label'].values)[:10000]
 
-X_val = (df_test['sentence'].values)[10000:]
-y_val = (df_test['label'].values)[10000:]
+X_val, X_test, y_val, y_test = train_test_split(df_test['sentence'].values, df_test['label'].values, test_size=0.5)
 
 X_train = [tweet_cleaner(t) for t in X]
 X_test = [tweet_cleaner(t) for t in X_test]
