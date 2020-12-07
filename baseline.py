@@ -1,5 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
 from collections import defaultdict
 import numpy as np
 import pandas as pd
@@ -19,6 +20,13 @@ def feature(datum, words, wordSet, wordId):
         feat[wordId[w]] += 1
     feat.append(1)
     return feat
+
+def getMaxScores(scores, yp):
+    s = [max(x) for x in scores]
+    for i in range(len(s)):
+        if yp[i] == 0:
+            s[i] = 1 - s[i]
+    return s
 
 df = pd.read_csv('./datasets/training80k.csv', names=['label', 'sentence'], sep='\t', engine='python')
 
@@ -44,7 +52,7 @@ for d in X:
 counts = [(wordCount[w], w) for w in wordCount]
 counts.sort()
 counts.reverse()
-words = [w[1] for w in counts[:1000]] #Top 1000
+words = [w[1] for w in counts[:1300]] #Top 1000
 wordId = dict(zip(words, range(len(words))))
 wordSet = set(words)
 
@@ -55,11 +63,28 @@ X_t = [feature(d, words, wordSet, wordId) for d in X_test]
 model = LogisticRegression(C=1, max_iter=500, verbose=1)
 model.fit(X_train, y_train)
 yp = model.predict(X_train)
+scores = model.predict_proba(X_train)
+s = getMaxScores(scores, yp)
+auc = roc_auc_score(y_train, s)
 acc = metrics.accuracy_score(y_train, yp)
+
+
 print("  Accuracy on %s  is: %s" % ('train', acc))
+print("  AUC-ROC Score on %s  is: %s" % ('train', auc))
+
 yp = model.predict(X_v)
+scores = model.predict_proba(X_v)
+s = getMaxScores(scores, yp)
+auc = roc_auc_score(y_val, s)
 acc = metrics.accuracy_score(y_val, yp)
 print("  Accuracy on %s  is: %s" % ('valid', acc))
+print("  AUC-ROC Score on %s  is: %s" % ('valid', auc))
+
 yp = model.predict(X_t)
+scores = model.predict_proba(X_t)
+s = getMaxScores(scores, yp)
+auc = roc_auc_score(y_test, s)
 acc = metrics.accuracy_score(y_test, yp)
+
 print("  Accuracy on %s  is: %s" % ('test', acc))
+print("  AUC-ROC Score on %s  is: %s" % ('test', auc))
