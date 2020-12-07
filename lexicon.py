@@ -29,16 +29,11 @@ def predict(X):
         d = [c for c in d if not (c in punct)]
         d = ''.join(d)
         words = d.strip().split()
-        ##print(words)
-        #input()
         for w in words:
             if w in posWords:
                 pos += 1
             elif w in negWords:
                 neg += 1
-        #print(pos)
-        
-        #print(neg)
         if pos > neg:
             yp.append(1)
         else:

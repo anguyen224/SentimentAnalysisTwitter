@@ -11,8 +11,21 @@ from keras import layers
 import numpy as np
 from bs4 import BeautifulSoup
 from nltk.tokenize import WordPunctTokenizer
+from sklearn.metrics import confusion_matrix
 import re
 import pickle
+
+def getber(yp, y, dataset):
+    if dataset == 'train':
+        tn,fp,fn,tp = confusion_matrix(y_train, yp).ravel()
+    elif dataset == 'valid':
+        tn,fp,fn,tp = confusion_matrix(y_val, yp).ravel()
+    elif dataset == 'test':
+        tn,fp,fn,tp = confusion_matrix(y_test, yp).ravel()
+
+    tpr = tp/(tp+fn)
+    tnr = tn/(tn+fp)
+    return  1 - 0.5 * (tpr + tnr)
 
 def create_embedding_matrix(filepath, word_index, embedding_dim):
     vocab_size = len(word_index) + 1  # Adding again 1 because of reserved 0 index
